@@ -1,0 +1,29 @@
+<%= form_for(@task_definition) do |f| %>
+  <% if @task_definition.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@task_definition.errors.count, "error") %> prohibited this task_definition from being saved:</h2>
+
+      <ul>
+      <% @task_definition.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :definition %><br />
+    <%= f.text_area :definition %>
+  </div>
+  <div class="field">
+    <%= f.label :depends_on_task_definition %><br />
+    <%= f.number_field :depends_on_task_definition %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

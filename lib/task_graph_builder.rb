@@ -9,8 +9,6 @@ class Builder
 
     begin
       send(method_name) # *args)
-    rescue Exception => e
-      puts "Exception: #{e.message}"
     ensure
       self.class.instance_eval { remove_method(method_name) } rescue nil
     end
@@ -41,11 +39,35 @@ class TaskGraphBuilder < Builder
 end
 
 class TaskGroupBuilder < Builder
-  def task(task_name, &block)
+  def task(task_name_or_hash, &block)
 
-    task_definition = TaskDefinition.new(:name => task_name.to_s)
+    if task_name_or_hash.is_a?(Hash)
+      # assume there is only one key, and it is a symbol
+      # assume for that key there is either one symbol or a single level array of symbols
+      task_name_symbol = task_name_or_hash.keys.first
+      name = task_name_symbol.to_s
+      dependent_task_or_tasks = task_name_or_hash[task_name_symbol]
+      if dependent_task_or_tasks.is_a?(Array) 
+        dependent_task_symbols = dependent_task_or_tasks
+      else
+        dependent_task_symbols = [dependent_task_or_tasks]
+      end
+    else
+      # assume that this is a symbol
+      name = task_name_or_hash.to_s
+      dependent_task_symbols = []
+    end
+
+    task_definition = TaskDefinition.new(:name => name)
     task_definition_builder = TaskDefinitionBuilder.new(task_definition)
     task_definition_builder.instance_exec(task_definition, &block)
+
+    task_definition.dependent_tasks = dependent_task_symbols.map do |dependent_task_symbol|
+      dependent_task_definition = TaskDefinition.find_by_name(dependent_task_symbol.to_s)
+      raise TaskGraph::MissingDependencyError.new(dependent_task_symbol.to_s) unless dependent_task_definition
+      dependent_task_definition
+    end
+
     task_definition.save
     tasks = TaskDefinition.all
   end

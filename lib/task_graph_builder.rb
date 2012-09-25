@@ -20,22 +20,9 @@ class TaskDefinitionBuilder < Builder
     @task_definition = task_definition
   end
 
-  def performed_by(role_name)
-    role = Role.where(:name => role_name.to_s).first
-    if !role then
-      role = Role.create(:name => role_name.to_s)
-    end
-    @task_definition.role = role
+  def method_missing(sym, *args, &block)
+    @task_definition.send(sym, *args, &block)
   end
-
-end
-
-class TaskGraphBuilder < Builder
-  def task_group(group_name, &block)
-    task_group_builder = TaskGroupBuilder.new
-    task_group_builder.instance_exec(&block)
-  end
-
 end
 
 class TaskGroupBuilder < Builder
@@ -72,3 +59,11 @@ class TaskGroupBuilder < Builder
     tasks = TaskDefinition.all
   end
 end
+
+class TaskGraphBuilder < Builder
+  def task_group(group_name, &block)
+    task_group_builder = TaskGroupBuilder.new
+    task_group_builder.instance_exec(&block)
+  end
+end
+

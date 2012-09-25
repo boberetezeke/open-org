@@ -1,34 +1,29 @@
 class Task < ActiveRecord::Base
-  class << self
-    def depends_on(task_names)
-      @depends_on_names = task_names
+  def initialize(*args)
+    super(*args)
+    if args.first.is_a?(Hash)
+      initializers = args.first
+      if task_definition = initializers[:prototype] then
+        setup_task_definition_defaults(task_definition)
+      end
     end
+  end
 
-    def performed_by(role)
-      @performed_by_role = role
-    end
+  def setup_task_definition_defaults(task_definition)
+    self.role = task_definition.role
+    select_owner
+  end
 
-    def starts_when(&block)
-      @starts_when_proc = block
-    end
-
-    def completed_when(&block)
-      @completed_when_proc = block
-    end
-
-    def on_completion(&block)
-      @on_completion_proc = block
-    end
-
-    def inherited(klass)
-      TaskGraph.instance.add_class(klass)
-    end
+  def select_owner
+    self.owner = self.role.people.empty? ? self.role.groups.first : self.people.first
   end
 
   cattr_accessor :depends_on_name
 
   belongs_to  :owner,       :polymorphic => true
   belongs_to  :role
+
+  belongs_to  :prototype,   :class_name => "TaskDefinition", :foreign_key => :task_definition_id
 
   belongs_to  :depends_on,  :class_name => "Task", :foreign_key => :depends_on_task_id
   has_many    :dependents,  :class_name => "Task", :foreign_key => :depends_on_task_id

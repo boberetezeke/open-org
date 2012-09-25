@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120607022811) do
+ActiveRecord::Schema.define(:version => 20120925191937) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(:version => 20120607022811) do
     t.integer "parent_task_id"
     t.boolean "is_prototype"
     t.string  "type"
+    t.integer "task_definition_id"
   end
 
 end

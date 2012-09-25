@@ -8,4 +8,6 @@ tmp/
 **/.backups
 *.swp
 *.txt
+.idea
+simpson.rb
 

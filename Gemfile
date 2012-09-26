@@ -23,6 +23,8 @@ end
 
 group :test do
   gem 'minitest-reporters', '>= 0.4.1'
+  gem 'factory_girl'
+  gem 'mocha', :require => false
 end
 
 gem 'jquery-rails'

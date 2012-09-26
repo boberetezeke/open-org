@@ -2,13 +2,8 @@ require "test_helper"
 
 class TaskTest < ActiveSupport::TestCase
   test "define a task from a task definition" do
-    fred = Person.create(:name => "fred")
-    sally = Person.create(:name => "sally")
-    jane = Person.create(:name => "jane")
-    board = Group.create(:name => "board")
-    board.people = [fred, sally, jane]
-    board_role = Role.create(:name => "board")
-    board.roles << board_role
+    board_role = FactoryGirl.create(:board_role)
+    board = board_role.groups.first
 
     select_presidential_nominees_task_def = 
       TaskDefinition.create(

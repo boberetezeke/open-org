@@ -11,3 +11,12 @@
  *= require_self
  *= require_tree .
 */
+
+/*
+#signin {
+  background-image: url("/assets/email_sign_in_black.png");
+  background-repeat: no-repeat;
+  min-width: 225px;
+  height: 25px;
+};
+*/

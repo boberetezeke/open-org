@@ -1,0 +1,4 @@
+=simple_form_for(@user) do |f|
+  .email_address= @user.email_address
+  = f.input :name
+  = f.button :submit

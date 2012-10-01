@@ -13,3 +13,57 @@
 //= require jquery
 //= require jquery_ujs
 //= require_tree .
+
+
+var current_user_id;
+
+$(function() {
+  var signinLink = document.getElementById('signin');
+  if (signinLink) {
+    signinLink.onclick = function() { 
+      navigator.id.request(); 
+      return false;
+    };
+  };
+   
+  var signoutLink = document.getElementById('signout');
+  if (signoutLink) {
+    signoutLink.onclick = function() { 
+      navigator.id.logout(); 
+      return false;
+    };
+  };
+
+  navigator.id.watch({
+    loggedInUser: current_user_id,
+    onlogin: function(assertion) {
+      // A user has logged in! Here you need to:
+      // 1. Send the assertion to your backend for verification and to create a session.
+      // 2. Update your UI.
+      if (current_user_id == "") {
+        $.ajax({ /* <-- This example uses jQuery, but you can use whatever you'd like */
+          type: 'POST',
+          url: '/user_sessions/create', // This is a URL on your website.
+          data: {assertion: assertion},
+          success: function(res, status, xhr) { window.location.reload(); },
+          error: function(res, status, xhr) { alert("login failure" + res); }
+        });
+      }
+    },
+    onlogout: function() {
+      // A user has logged out! Here you need to:
+      // Tear down the user's session by redirecting the user or making a call to your backend.
+      // Also, make that loggedInUser will get set to null on the next page load.
+      // (That's a literal JavaScript null. Not false, 0, or undefined. null.)
+      if (current_user_id != "") {
+        $.ajax({
+          type: 'POST',
+          url: '/user_sessions/' + current_user_id, // This is a URL on your website.
+          data: { _method: "delete" },
+          success: function(res, status, xhr) { window.location.reload(); },
+          error: function(res, status, xhr) { alert("logout failure" + res); }
+        });
+      }
+    }
+  });
+});

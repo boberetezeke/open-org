@@ -15,7 +15,7 @@ class Task < ActiveRecord::Base
   end
 
   def select_owner
-    self.owner = self.role.people.empty? ? self.role.groups.first : self.people.first
+    self.owner = self.role.users.empty? ? self.role.groups.first : self.users.first
   end
 
   cattr_accessor :depends_on_name

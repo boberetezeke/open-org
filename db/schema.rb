@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120925191937) do
+ActiveRecord::Schema.define(:version => 20120930190702) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -28,10 +28,6 @@ ActiveRecord::Schema.define(:version => 20120925191937) do
     t.integer "group_id"
   end
 
-  create_table "people", :force => true do |t|
-    t.string "name"
-  end
-
   create_table "roles", :force => true do |t|
     t.string  "name"
     t.integer "task_definition_id"
@@ -43,7 +39,6 @@ ActiveRecord::Schema.define(:version => 20120925191937) do
     t.integer  "depends_on_task_definition"
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
-    t.text     "description"
     t.integer  "role_id"
   end
 
@@ -57,6 +52,11 @@ ActiveRecord::Schema.define(:version => 20120925191937) do
     t.boolean "is_prototype"
     t.string  "type"
     t.integer "task_definition_id"
+  end
+
+  create_table "users", :force => true do |t|
+    t.string "name"
+    t.string "email_address"
   end
 
 end

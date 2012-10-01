@@ -1,15 +1,15 @@
 FactoryGirl.define do
-  factory :fred, class: Person do
+  factory :fred, class: User do
     name "Fred"
     association :board
   end
 
-  factory :jane, class: Person do
+  factory :jane, class: User do
     name "Jane"
     association :board
   end
 
-  factory :sally, class: Person do
+  factory :sally, class: User do
     name "Sally"
     association :board
   end

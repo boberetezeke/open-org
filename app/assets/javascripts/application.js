@@ -16,25 +16,10 @@
 
 
 var current_user_id;
+var mock_login = true;
 
 $(function() {
-  var signinLink = document.getElementById('signin');
-  if (signinLink) {
-    signinLink.onclick = function() { 
-      navigator.id.request(); 
-      return false;
-    };
-  };
-   
-  var signoutLink = document.getElementById('signout');
-  if (signoutLink) {
-    signoutLink.onclick = function() { 
-      navigator.id.logout(); 
-      return false;
-    };
-  };
-
-  navigator.id.watch({
+  var watch_callbacks = {
     loggedInUser: current_user_id,
     onlogin: function(assertion) {
       // A user has logged in! Here you need to:
@@ -65,5 +50,29 @@ $(function() {
         });
       }
     }
-  });
+  };
+
+  var signinLink = document.getElementById('signin');
+  if (signinLink) {
+    signinLink.onclick = function() { 
+      if (mock_login) 
+        watch_callbacks.onlogin("mock");
+      else
+        navigator.id.request(); 
+      return false;
+    };
+  };
+   
+  var signoutLink = document.getElementById('signout');
+  if (signoutLink) {
+    signoutLink.onclick = function() { 
+      if (mock_login) 
+        watch_callbacks.onlogout();
+      else
+        navigator.id.logout(); 
+      return false;
+    };
+  };
+  
+  navigator.id.watch(watch_callbacks);
 });

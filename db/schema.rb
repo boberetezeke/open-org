@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120930190702) do
+ActiveRecord::Schema.define(:version => 20121008015713) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -20,12 +20,17 @@ ActiveRecord::Schema.define(:version => 20120930190702) do
   end
 
   create_table "groups", :force => true do |t|
-    t.string "name"
+    t.string  "name"
+    t.integer "organization_id"
   end
 
   create_table "memberships", :id => false, :force => true do |t|
-    t.integer "person_id"
+    t.integer "user_id"
     t.integer "group_id"
+  end
+
+  create_table "organizations", :force => true do |t|
+    t.string "name"
   end
 
   create_table "roles", :force => true do |t|
@@ -46,12 +51,12 @@ ActiveRecord::Schema.define(:version => 20120930190702) do
     t.string  "name"
     t.integer "role_id"
     t.integer "owner_id"
-    t.integer "owner_type"
     t.integer "depends_on_task_id"
     t.integer "parent_task_id"
     t.boolean "is_prototype"
     t.string  "type"
     t.integer "task_definition_id"
+    t.string  "owner_type"
   end
 
   create_table "users", :force => true do |t|

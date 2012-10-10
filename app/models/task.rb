@@ -15,6 +15,8 @@ class Task < ActiveRecord::Base
   # for those tasks that have votes for them to proceed
   has_many    :votes
 
+  scope :in_priority_order, order(:priority)
+
   def initialize(*args)
     super(*args)
     if args.first.is_a?(Hash)

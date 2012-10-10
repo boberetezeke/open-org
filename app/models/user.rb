@@ -5,5 +5,13 @@ class User < ActiveRecord::Base
   has_many :groups, :through => :memberships
   has_many :memberships
   has_many :votes
+
+  def organizations
+    self.groups.where(:is_organization => true)
+  end
+
+  def assigned_tasks
+    self.tasks
+  end
 end
 

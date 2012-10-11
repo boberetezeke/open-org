@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121010025119) do
+ActiveRecord::Schema.define(:version => 20121011035322) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -20,14 +20,13 @@ ActiveRecord::Schema.define(:version => 20121010025119) do
   end
 
   create_table "groups", :force => true do |t|
-    t.string  "name"
-    t.integer "organization_id"
-    t.boolean "is_organization"
+    t.string "name"
   end
 
   create_table "memberships", :id => false, :force => true do |t|
     t.integer "user_id"
     t.integer "group_id"
+    t.integer "organization_id"
   end
 
   create_table "organizations", :force => true do |t|

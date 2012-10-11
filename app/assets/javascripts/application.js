@@ -16,7 +16,7 @@
 
 
 var current_user_id;
-var mock_login = true;
+var mock_login = false;
 
 $(function() {
   var watch_callbacks = {

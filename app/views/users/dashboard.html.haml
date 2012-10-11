@@ -5,6 +5,10 @@ Dashboard
   .organizations
     - current_user.organizations.each do |organization|
       = render :partial => "organizations/summary", :locals => {:organization => organization}
+  .groups-headline Groups
+  .groups
+    - current_user.groups.each do |group|
+      = render :partial => "groups/summary", :locals => {:group => group}
   .tasks-headline Tasks
   .tasks
     - current_user.assigned_tasks.in_priority_order.each do |task|

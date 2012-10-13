@@ -1,0 +1,4 @@
+.organization= "Name: #{@organization.name}"
+Groups
+- @organization.groups.each do |group|
+  .group= render :partial => "groups/summary", :locals => {:group => group}

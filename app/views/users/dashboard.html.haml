@@ -12,6 +12,6 @@ Dashboard
   .tasks-headline Tasks
   .tasks
     - current_user.assigned_tasks.in_priority_order.each do |task|
-      = render :partial => "tasks/summary", :locals => {:task => task}
+      = render :partial => "tasks/summary", :locals => {:task => task, :include_actions => false}
 - else
   %div no current user

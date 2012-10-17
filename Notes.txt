@@ -1,0 +1,21 @@
+
+Curl commands
+--------------
+
+To get all tasks
+
+  curl -i -H "Accept: application/json" http://localhost:3000/tasks
+
+To get one task
+
+  curl -i -H "Accept: application/json" http://localhost:3000/tasks/9
+
+To modify a task
+
+  curl -i -H "Accept: application/json" -H "Content-type: application/json" -X PUT -d '{"task":{"name":"new-task"}}' http://localhost:3000/tasks/8 
+
+To create a new task
+
+  curl -i -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"task":{"name":"new-task5"}}' http://localhost:3000/tasks
+
+

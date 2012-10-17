@@ -15,6 +15,7 @@
 //= require_tree .
 
 
+/*
 var current_user_id;
 var mock_login = false;
 
@@ -26,7 +27,7 @@ $(function() {
       // 1. Send the assertion to your backend for verification and to create a session.
       // 2. Update your UI.
       if (current_user_id == "") {
-        $.ajax({ /* <-- This example uses jQuery, but you can use whatever you'd like */
+        $.ajax({ // <-- This example uses jQuery, but you can use whatever you'd like
           type: 'POST',
           url: '/user_sessions/create', // This is a URL on your website.
           data: {assertion: assertion},
@@ -76,3 +77,4 @@ $(function() {
   
   navigator.id.watch(watch_callbacks);
 });
+*/

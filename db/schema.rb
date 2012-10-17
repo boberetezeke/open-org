@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121011035322) do
+ActiveRecord::Schema.define(:version => 20121017003230) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20121011035322) do
   create_table "users", :force => true do |t|
     t.string "name"
     t.string "email_address"
+    t.string "password_digest"
   end
 
 end

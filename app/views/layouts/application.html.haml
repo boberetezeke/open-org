@@ -7,7 +7,7 @@
 
   %body
     - if current_user
-      %a#signout{:href=>"#"}= "Sign Out"
+      = link_to 'Sign Out', user_session_path(current_user), :method => :delete
     - else
       %a#signin{:href=>"#"}= "Sign In"
     = yield

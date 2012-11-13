@@ -1,7 +1,7 @@
 Dashboard
 - if current_user
   %div= "user email: #{current_user.email_address}"
-  .organizations-headline Organizations
+  .organizations-headline= link_to "Organizations", organizations_path
   .organizations
     - current_user.organizations.each do |organization|
       = render :partial => "organizations/summary", :locals => {:organization => organization}

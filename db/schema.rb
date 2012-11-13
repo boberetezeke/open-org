@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121017003230) do
+ActiveRecord::Schema.define(:version => 20121021171919) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20121017003230) do
     t.integer "task_definition_id"
     t.string  "owner_type"
     t.integer "priority"
+    t.string  "description"
   end
 
   create_table "users", :force => true do |t|

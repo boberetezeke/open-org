@@ -4,11 +4,11 @@ Curl commands
 
 To get all tasks
 
-  curl -i -H "Accept: application/json" http://localhost:3000/tasks
+  curl -i -u user:asdf -H "Accept: application/json" http://localhost:3000/tasks
 
 To get one task
 
-  curl -i -H "Accept: application/json" http://localhost:3000/tasks/9
+  curl -i -u user:asdf -H "Accept: application/json" http://localhost:3000/tasks/9
 
 To modify a task
 

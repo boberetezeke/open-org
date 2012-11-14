@@ -2,6 +2,7 @@ Ooo::Application.routes.draw do
   resources :task_definitions
   resources :groups
   resources :tasks
+  resources :roles
   resources :organizations
 
   resources :user_sessions do

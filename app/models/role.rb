@@ -1,4 +1,5 @@
 class Role < ActiveRecord::Base
+  belongs_to :organization
   has_many :assignments
 
   has_many :users,   :through => :assignments, :source => :assignable,

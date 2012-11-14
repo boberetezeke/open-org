@@ -10,3 +10,6 @@
 .section-title Groups without users
 - @organization.groups.empty.each do |group|
   .user= render :partial => "groups/summary", :locals => {:group => group}
+.section-title Roles
+- @organization.roles.each do |role|
+  .role= render :partial => "roles/summary", :locals => {:role => role}

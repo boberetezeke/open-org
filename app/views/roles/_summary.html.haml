@@ -1,0 +1,3 @@
+.title= link_to(role.name, role_path(role))
+- role.task_definitions.each do |task_def|
+  .task-definition= render :partial => "task_definitions/summary", :locals => { :task_definition => task_definition }

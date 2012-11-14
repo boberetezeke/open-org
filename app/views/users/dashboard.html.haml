@@ -9,7 +9,7 @@ Dashboard
   .groups
     - current_user.groups.each do |group|
       = render :partial => "groups/summary", :locals => {:group => group}
-  .tasks-headline Tasks
+  .tasks-headline= link_to "Tasks", tasks_path
   .tasks
     - current_user.assigned_tasks.in_priority_order.each do |task|
       = render :partial => "tasks/summary", :locals => {:task => task, :include_actions => false}

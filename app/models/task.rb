@@ -17,7 +17,7 @@ class Task < ActiveRecord::Base
 
   scope :in_priority_order, order(:priority)
 
-  validates_format_of :name, :with => /task/
+  #validates_format_of :name, :with => /task/
 
   def initialize(*args)
     super(*args)

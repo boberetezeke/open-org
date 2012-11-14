@@ -3,7 +3,8 @@ class TasksController < ApplicationController
 
   def index
     #@tasks = current_user.tasks
-    @tasks = Task.all
+    @tasks = current_user.tasks
+    @groups = current_user.groups
     respond_with(@tasks)
   end
 

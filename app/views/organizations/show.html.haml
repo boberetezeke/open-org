@@ -1,4 +1,12 @@
 .organization= "Name: #{@organization.name}"
-Groups
-- @organization.groups.each do |group|
+.section-title Groups
+- @organization.groups.occupied.each do |group|
   .group= render :partial => "groups/summary", :locals => {:group => group}
+  - group.users.each do |user|
+    .user= render :partial => "users/summary", :locals => {:user => user}
+.section-title Users not in groups
+- @organization.users.ungrouped.each do |user|
+  .user= render :partial => "users/summary", :locals => {:user => user}
+.section-title Groups without users
+- @organization.groups.empty.each do |group|
+  .user= render :partial => "groups/summary", :locals => {:group => group}

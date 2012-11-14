@@ -5,7 +5,7 @@ Dashboard
   .organizations
     - current_user.organizations.each do |organization|
       = render :partial => "organizations/summary", :locals => {:organization => organization}
-  .groups-headline Groups
+  .groups-headline= link_to "Groups", groups_path
   .groups
     - current_user.groups.each do |group|
       = render :partial => "groups/summary", :locals => {:group => group}

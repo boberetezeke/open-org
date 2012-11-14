@@ -12,6 +12,13 @@ class User < ActiveRecord::Base
   has_many :organizational_groups, :through => :organizations, :source => :groups
   has_many :votes
 
+  def self.ungrouped
+    mt = Membership.arel_table
+    user_ids_in_groups = Membership.where(mt[:group_id].eq(nil).not).map{|m| m.user_id}.reject{|u| u.nil?}
+    ut = User.arel_table
+    User.where(ut[:id].in(user_ids_in_groups).not)
+  end
+
   def assigned_tasks
     self.tasks
   end

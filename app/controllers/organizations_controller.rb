@@ -1,9 +1,9 @@
 class OrganizationsController < ApplicationController
   def index
-    @organizations = Organization.all
+    @organizations = current_user.organizations
   end
 
   def show
-    @organization = Organization.find(params[:id])
+    @organization = current_user.organizations.find(params[:id])
   end
 end

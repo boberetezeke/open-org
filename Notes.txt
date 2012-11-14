@@ -1,4 +1,12 @@
 
+Users
+--------------
+
+To get the password_digest set, use
+
+u.password_digest = BCrypt::Password.create(clear_text_password)
+
+
 Curl commands
 --------------
 

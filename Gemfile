@@ -13,6 +13,7 @@ gem 'simple_form'
 gem 'rabl-rails'
 gem 'bcrypt-ruby'
 
+gem 'open-org-meetings', git: 'git@github.com:boberetezeke/open-org-meetings.git'
 
 
 # Gems used only for assets and not required

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121114235356) do
+ActiveRecord::Schema.define(:version => 20121115162730) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -51,6 +51,7 @@ ActiveRecord::Schema.define(:version => 20121114235356) do
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
     t.integer  "role_id"
+    t.integer  "parent_task_definition_id"
   end
 
   create_table "task_dependencies", :id => false, :force => true do |t|

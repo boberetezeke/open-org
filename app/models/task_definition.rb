@@ -7,6 +7,9 @@ class TaskDefinition < ActiveRecord::Base
   has_many :dependencies, through: :dependees, :source => :dependent_task_definition
   has_many :depending_on, through: :dependers, :source => :dependee_task_definition
 
+  belongs_to  :parent_task_definition, :class_name => "TaskDefinition", :foreign_key => :parent_task_definition_id
+  has_many    :child_task_definitions, :class_name => "TaskDefinition", :foreign_key => :parent_task_definition_id
+
   def performed_by(role_name)
     role = Role.where(:name => role_name.to_s).first
     if !role then

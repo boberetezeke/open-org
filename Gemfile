@@ -8,6 +8,8 @@ gem 'rails', '3.2.9'
 gem 'sqlite3'
 gem 'haml'
 gem 'simple_form'
+gem 'inherited_resources'
+
 #gem 'pg'
 
 gem 'rabl-rails'

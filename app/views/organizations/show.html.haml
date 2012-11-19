@@ -1,15 +1,20 @@
-.organization= "Name: #{@organization.name}"
+- organization = resource
+.organization= "Name: #{organization.name}"
 .section-title Groups
-- @organization.groups.occupied.each do |group|
+- organization.groups.occupied.each do |group|
   .group= render :partial => "groups/summary", :locals => {:group => group}
   - group.users.each do |user|
     .user= render :partial => "users/summary", :locals => {:user => user}
 .section-title Users not in groups
-- @organization.users.ungrouped.each do |user|
+- organization.users.ungrouped.each do |user|
   .user= render :partial => "users/summary", :locals => {:user => user}
 .section-title Groups without users
-- @organization.groups.empty.each do |group|
+- organization.groups.empty.each do |group|
   .user= render :partial => "groups/summary", :locals => {:group => group}
 .section-title Roles
-- @organization.roles.each do |role|
+- organization.roles.each do |role|
   .role= render :partial => "roles/summary", :locals => {:role => role}
+.section-title Task Graph Definitions
+- organization.task_graph_definitions.each do |task_graph_definition|
+  .task_graph_definition= render :partial => "task_graph_definitions/summary", :locals => { :task_graph_definition => task_graph_definition }
+= link_to("Add Task Graph Definition", new_organization_task_graph_definition_path(organization))

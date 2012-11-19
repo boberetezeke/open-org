@@ -50,6 +50,7 @@ ActiveRecord::Schema.define(:version => 20121119165909) do
     t.integer  "depends_on_task_definition"
     t.datetime "created_at",                 :null => false
     t.datetime "updated_at",                 :null => false
+    t.text     "description"
     t.integer  "role_id"
     t.integer  "parent_task_definition_id"
   end

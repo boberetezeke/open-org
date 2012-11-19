@@ -67,12 +67,12 @@ EOF
     select_presidential_nominating_committee_task = task_definitions.first
     assert_equal "select_presidential_nominating_committee", select_presidential_nominating_committee_task.name
     assert_equal "board", select_presidential_nominating_committee_task.role.name
-    assert_equal [], select_presidential_nominating_committee_task.dependent_tasks
+    assert_equal [], select_presidential_nominating_committee_task.dependencies
 
     select_presidential_nominees_task = task_definitions.second
     assert_equal "select_presidential_nominees", select_presidential_nominees_task.name
     assert_equal "presidential_nominating_committee", select_presidential_nominees_task.role.name
-    assert_equal [select_presidential_nominating_committee_task], select_presidential_nominees_task.dependent_tasks
+    assert_equal [select_presidential_nominating_committee_task], select_presidential_nominees_task.dependencies
   end
 
   test "define a task that has a non-existent dependency" do

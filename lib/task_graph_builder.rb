@@ -49,7 +49,7 @@ class TaskGroupBuilder < Builder
     task_definition_builder = TaskDefinitionBuilder.new(task_definition)
     task_definition_builder.instance_exec(task_definition, &block)
 
-    task_definition.dependent_tasks = dependent_task_symbols.map do |dependent_task_symbol|
+    task_definition.dependencies = dependent_task_symbols.map do |dependent_task_symbol|
       dependent_task_definition = TaskDefinition.find_by_name(dependent_task_symbol.to_s)
       raise TaskGraph::MissingDependencyError.new(dependent_task_symbol.to_s) unless dependent_task_definition
       dependent_task_definition

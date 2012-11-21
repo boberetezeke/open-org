@@ -5,7 +5,6 @@ class TaskGraphDefinitionTest < ActiveSupport::TestCase
     @organization = FactoryGirl.create(:pta)
   end
 
-=begin
   should "define task_group with one empty task" do
     assert_equal 0, TaskGraphDefinition.count
 
@@ -128,7 +127,7 @@ EOF
     assert_equal "presidential_nominating_committee", select_presidential_nominees_task.role.name
     assert_equal [select_presidential_nominating_committee_task], select_presidential_nominees_task.dependencies
   end
-=end
+
   should "define a task that has a non-existent dependency" do
     #TaskGraph.instance.eval_task_definition(@organization, :create, <<EOF)
     tgd = TaskGraphDefinition.create(:organization => @organization, :definition => <<EOF)

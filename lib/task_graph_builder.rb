@@ -26,6 +26,14 @@ class TaskDefinitionBuilder < Builder
 end
 
 class TaskGroupBuilder < Builder
+  attr_reader :tasks
+
+  def initialize(task_graph_definition, organization)
+    @task_graph_definition = task_graph_definition
+    @organization = organization
+    @tasks = {}
+  end
+
   def task(task_name_or_hash, &block)
 
     if task_name_or_hash.is_a?(Hash)
@@ -45,25 +53,72 @@ class TaskGroupBuilder < Builder
       dependent_task_symbols = []
     end
 
-    task_definition = TaskDefinition.new(:name => name)
+    task_defs = @task_graph_definition.task_definitions.select{|task_def| task_def.name.to_s == name.to_s}
+    if task_defs.empty? then
+      task_definition = TaskDefinition.new(:name => name, :organization => @organization)
+    else
+      raise TaskGraphBuilder::TaskDefinitionAlreadyDefinedError.new(name) if task_definition
+    end
     task_definition_builder = TaskDefinitionBuilder.new(task_definition)
     task_definition_builder.instance_exec(task_definition, &block)
+      
+=begin
+    task_definitions = TaskDefinition.where(:name => name.to_s, :organization_id => @organization.id)
+    task_definition = task_definitions.first if task_definitions.present?
+    if @task_graph_definition.new_record?
+      raise TaskGraphBuilder::TaskDefinitionAlreadyDefinedError.new(name) if task_definition
+    end
+    task_definition_builder = TaskDefinitionBuilder.new(task_definition)
+    task_definition_builder.instance_exec(task_definition, &block)
+=end
 
     task_definition.dependencies = dependent_task_symbols.map do |dependent_task_symbol|
-      dependent_task_definition = TaskDefinition.find_by_name(dependent_task_symbol.to_s)
-      raise TaskGraph::MissingDependencyError.new(dependent_task_symbol.to_s) unless dependent_task_definition
-      dependent_task_definition
+      #dependent_task_definition = TaskDefinition.find_by_name(dependent_task_symbol.to_s)
+      #if !dependent_task_definition
+      task_defs = @task_graph_definition.task_definitions.select{|task_def| task_def.name.to_s == dependent_task_symbol.to_s}
+      if task_defs.empty?
+        raise TaskGraphBuilder::MissingDependencyError.new(dependent_task_symbol.to_s) 
+      else
+        task_defs.first
+      end
     end
 
-    task_definition.save
-    tasks = TaskDefinition.all
+    @task_graph_definition.task_definitions << task_definition
   end
 end
 
 class TaskGraphBuilder < Builder
+  class Error < Exception; end
+
+  class MissingDependencyError < Error
+    attr_reader :task_dependency_name_symbol
+    def initialize(task_dependency_name_symbol)
+      @task_dependency_name_symbol = task_dependency_name_symbol
+    end
+
+    def to_s
+      "missing dependency: #{@task_dependency_name_symbol}"
+    end
+  end
+
+  class TaskDefinitionAlreadyDefinedError < Error
+    attr_reader :task_definition_name_symbol
+    def initialize(task_definition_name_symbol)
+      @task_definition_name_symbol = task_definition_name_symbol
+    end
+  end
+
+  attr_reader :tasks
+  def initialize(task_graph_definition, organization)
+    @task_graph_definition = task_graph_definition
+    @organization = organization
+    @tasks = []
+  end
+
   def task_group(group_name, &block)
-    task_group_builder = TaskGroupBuilder.new
+    task_group_builder = TaskGroupBuilder.new(@task_graph_definition, @organization)
     task_group_builder.instance_exec(&block)
+    @tasks += task_group_builder.tasks.values
   end
 end
 

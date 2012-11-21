@@ -1,0 +1,5 @@
+= @task_graph_definition.definition
+%ul
+  - @task_graph_definition.task_definitions.each do |task_definition|
+    %li= render :partial => "task_definition/summary", :locals => {:task_definition => task_definition}
+  

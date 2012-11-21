@@ -1,4 +1,12 @@
 FactoryGirl.define do
+  factory :pta, class: Organization do
+    name "PTA"
+  end
+
+  factory :select_presidential_nominees_task_definition, class: TaskDefinition do
+    name "select_presidential_nominees"
+  end
+
   factory :fred, class: User do
     name "Fred"
     association :board

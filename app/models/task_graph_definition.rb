@@ -5,7 +5,9 @@ class TaskGraphDefinition < ActiveRecord::Base
   before_validation :clear_out_task_definitions
   validate :validate_definition
 
-  attr_reader :validated_tasks
+  default_scope where(:current_revision => true)
+
+  attr_reader :new_id
 
   def initialize(*args)
     super
@@ -17,7 +19,7 @@ class TaskGraphDefinition < ActiveRecord::Base
     if self.new_record? || !self.current_revision
       super
     else
-      old_task_graph_definition = TaskGraphDefinition.find(self.id)
+      old_task_graph_definition = TaskGraphDefinition.unscoped.find(self.id)
       old_task_definitions = old_task_graph_definition.task_definitions
       begin
         self.transaction do
@@ -25,13 +27,13 @@ class TaskGraphDefinition < ActiveRecord::Base
             task_definition.current_revision = false
             task_definition.save
           end
-          old_task_graph_definition = TaskGraphDefinition.find(self.id)
           old_task_graph_definition.current_revision = false
           old_task_graph_definition.save
 
           new_record = self.dup
           new_record.version = old_task_graph_definition.version + 1
           new_record.save
+          @new_id = new_record.id
         end
       end
     end

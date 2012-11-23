@@ -1,25 +1,12 @@
 class TaskGraphDefinitionsController < InheritedResources::Base
-  belongs_to :organization
+  belongs_to :organization, :shallow => true
 
   def update
-    old_task_graph_definition = TaskGraphDefinition.find(params[:id])
-    old_task_definitions = old_task_graph_definitions.task_definitions
-    new_task_graph_definition = TaskGraphDefinition.new(:definition => params[:definition])
-    begin
-      TaskGraphDefinition.transaction do
-        old_task_definitions.each do |task_definition|
-          task_definition.current_revision = false
-          task_definition.save
-        end
-        old_task_graph_definition.current_revision = false
-        new_task_graph_definition.version = old_task_graph_definition.version + 1
-        new_task_graph_definition.save
-      end
-    rescue Exception => e
-      redirect_to :edit
-      return
+    task_graph_definition = TaskGraphDefinition.find(params[:id])
+    if task_graph_definition.update_attributes(params[:task_graph_definition]) then
+      redirect_to task_graph_definition_path(TaskGraphDefinition.find(task_graph_definition.new_id))
+    else
+      redirect_to edit_task_graph_definition_path(task_graph_definition)
     end
-
-    redirect_to :show
   end
 end

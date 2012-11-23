@@ -3,7 +3,7 @@ Ooo::Application.routes.draw do
   resources :groups
   resources :tasks
   resources :roles
-  resources :organizations do
+  resources :organizations, :shallow => true do
     resources :task_graph_definitions
   end
 

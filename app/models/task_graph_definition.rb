@@ -21,19 +21,19 @@ class TaskGraphDefinition < ActiveRecord::Base
     else
       old_task_graph_definition = TaskGraphDefinition.unscoped.find(self.id)
       old_task_definitions = old_task_graph_definition.task_definitions
+
       begin
         self.transaction do
+          new_old_task_graph_definition = self.class.new #old_task_graph_definition.dup
+          new_old_task_graph_definition.current_revision = false
+          new_old_task_graph_definition.save
           old_task_definitions.each do |task_definition|
             task_definition.current_revision = false
+            task_definition.task_graph_definition = new_old_task_graph_definition
             task_definition.save
           end
-          old_task_graph_definition.current_revision = false
-          old_task_graph_definition.save
-
-          new_record = self.dup
-          new_record.version = old_task_graph_definition.version + 1
-          new_record.save
-          @new_id = new_record.id
+          self.version = old_task_graph_definition.version + 1
+          super
         end
       end
     end

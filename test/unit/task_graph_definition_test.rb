@@ -32,9 +32,9 @@ EOF
 EOF
     tgd2.save
 
-    assert_equal 2, TaskGraphDefinition.count
+    assert_equal 2, TaskGraphDefinition.unscoped.count
     assert_equal 2, TaskDefinition.count
-    task_graph_definitions = TaskGraphDefinition.order(:version)
+    task_graph_definitions = TaskGraphDefinition.unscoped.order(:version)
     old_task_graph_definition, new_task_graph_definition = task_graph_definitions
     assert_equal 1, old_task_graph_definition.version
     assert_equal false, old_task_graph_definition.current_revision

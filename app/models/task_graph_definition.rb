@@ -1,6 +1,6 @@
 class TaskGraphDefinition < ActiveRecord::Base
   belongs_to :organization
-  has_many :task_definitions
+  has_many :task_definitions, :class_name => "Task", :foreign_key => :task_graph_definition_id, :conditions => {:is_prototype => true}
 
   before_validation :clear_out_task_definitions
   validate :validate_definition

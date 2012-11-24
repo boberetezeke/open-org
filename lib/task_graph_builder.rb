@@ -55,7 +55,7 @@ class TaskGroupBuilder < Builder
 
     task_defs = @task_graph_definition.task_definitions.select{|task_def| task_def.name.to_s == name.to_s}
     if task_defs.empty? then
-      task_definition = TaskDefinition.new(:name => name, :organization => @organization)
+      task_definition = Task.new(:name => name, :organization => @organization, :is_prototype => true)
     else
       raise TaskGraphBuilder::TaskDefinitionAlreadyDefinedError.new(name) if task_definition
     end

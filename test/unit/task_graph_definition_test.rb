@@ -17,11 +17,11 @@ EOF
     tgd.save
     
     assert_equal 1, TaskGraphDefinition.count
-    assert_equal 1, TaskDefinition.count
+    assert_equal 1, Task.count
     tgd = TaskGraphDefinition.first
     assert_equal true, tgd.current_revision
     assert_equal 1, tgd.version
-    assert_equal ["select_presidential_nominees"], TaskDefinition.all.map(&:name)
+    assert_equal ["select_presidential_nominees"], Task.all.map(&:name)
 
     tgd2 = TaskGraphDefinition.first
     tgd2.definition = <<EOF
@@ -33,7 +33,7 @@ EOF
     tgd2.save
 
     assert_equal 2, TaskGraphDefinition.unscoped.count
-    assert_equal 2, TaskDefinition.count
+    assert_equal 2, Task.count
     task_graph_definitions = TaskGraphDefinition.unscoped.order(:version)
     old_task_graph_definition, new_task_graph_definition = task_graph_definitions
     assert_equal 1, old_task_graph_definition.version
@@ -59,7 +59,7 @@ EOF
 EOF
     assert tgd.valid?
     tgd.save
-    assert_equal ["select_presidential_nominees"], TaskDefinition.all.map(&:name)
+    assert_equal ["select_presidential_nominees"], Task.all.map(&:name)
   end
 
   should "define a task_group with one non-empty task " do
@@ -72,8 +72,8 @@ EOF
         end
 EOF
     tgd.save
-    assert_equal 1, TaskDefinition.count
-    task_def = TaskDefinition.first
+    assert_equal 1, Task.count
+    task_def = Task.first
     assert_equal "board", task_def.role.name
   end
 
@@ -90,8 +90,8 @@ EOF
         end
       end
 EOF
-    assert_equal 2, TaskDefinition.count
-    task_definitions = TaskDefinition.all.sort_by{|td| td.name}
+    assert_equal 2, Task.count
+    task_definitions = Task.all.sort_by{|td| td.name}
     task_def = task_definitions.first
     assert_equal "select_presidential_nominating_committee", task_def.name
     assert_equal "board", task_def.role.name
@@ -114,8 +114,8 @@ EOF
       end
 EOF
 
-    assert_equal 2, TaskDefinition.count
-    task_definitions = TaskDefinition.all.sort_by{|td| td.name}
+    assert_equal 2, Task.count
+    task_definitions = Task.all.sort_by{|td| td.name}
 
     select_presidential_nominating_committee_task = task_definitions.first
     assert_equal "select_presidential_nominating_committee", select_presidential_nominating_committee_task.name
@@ -141,50 +141,4 @@ EOF
     assert_equal :definition, tgd.errors.first.first
     assert_equal "missing dependency: select_presidential_nominating_committee", tgd.errors.first[1]
   end
-
-=begin
-  context "testing with existing task definitions" do
-    setup do
-      task_definition = FactoryGirl.create(:select_presidential_nominees_task_definition)
-      task_definition.organization = @organization
-      task_definition.save
-    end
-
-    should "define a task that is already defined by that name" do
-
-      assert_raises(TaskGraph::TaskDefinitionAlreadyDefinedError) do
-        TaskGraph.instance.eval_task_definition(@organization, :create, <<EOF)
-          task_group :governance do
-            task :select_presidential_nominees do
-            end
-          end
-EOF
-      end
-    end  
-
-    should "update an already defined task of the same name" do
-      assert_equal 1, TaskDefinition.count
-      task_definitions = TaskDefinition.all.sort_by{|td| td.name}
-      select_presidential_nominees_task = task_definitions.first
-
-      assert_equal nil, select_presidential_nominees_task.role
-
-puts "select_presidential_nominees.organization = #{select_presidential_nominees_task.organization_id}"
-
-      TaskGraph.new.eval_task_definition(@organization, :update, <<EOF)
-        task_group :governance do
-          task :select_presidential_nominees do
-            performed_by :board
-          end
-        end
-EOF
-
-      task_definitions = TaskDefinition.all.sort_by{|td| td.name}
-      select_presidential_nominees_task = task_definitions.first
-      assert_equal "select_presidential_nominees", select_presidential_nominees_task.name
-      assert_equal "board", select_presidential_nominees_task.role.name
-      assert_equal [], select_presidential_nominees_task.dependencies
-    end  
-  end
-=end
 end

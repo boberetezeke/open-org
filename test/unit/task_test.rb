@@ -6,9 +6,10 @@ class TaskTest < ActiveSupport::TestCase
     board = board_role.groups.first
 
     select_presidential_nominees_task_def = 
-      TaskDefinition.create(
+      Task.create(
         :name => :select_presidential_nominees,
-        :role => board_role
+        :role => board_role,
+        :is_prototype => true
       )
     task = Task.create(
               :name => "nominate president", 

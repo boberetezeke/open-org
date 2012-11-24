@@ -1,1 +1,1 @@
-.title= task_definition.name + (task_definition.child_task_definitions.present? ? " (with children)" : "")
+.title= link_to(task_definition.name + (task_definition.child_tasks.present? ? " (with children)" : ""), task_definition)

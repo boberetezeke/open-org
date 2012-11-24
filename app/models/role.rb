@@ -6,6 +6,6 @@ class Role < ActiveRecord::Base
                                                 :source_type => "User"
   has_many :groups,   :through => :assignments, :source => :assignable,
                                                 :source_type => "Group"
-  has_many :task_definitions
+  has_many :task_definitions, :class_name => "Task", :foreign_key => :role_id, :conditions => {:is_prototype => true}
 end
 

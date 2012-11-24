@@ -3,7 +3,9 @@ Ooo::Application.routes.draw do
   resources :groups
   resources :tasks
   resources :roles
-  resources :organizations
+  resources :organizations, :shallow => true do
+    resources :task_graph_definitions
+  end
 
   resources :user_sessions do
     member do

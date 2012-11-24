@@ -8,6 +8,8 @@ gem 'rails', '3.2.9'
 gem 'sqlite3'
 gem 'haml'
 gem 'simple_form'
+gem 'inherited_resources'
+
 #gem 'pg'
 
 gem 'rabl-rails'
@@ -32,6 +34,7 @@ group :test do
   gem 'minitest-reporters', '>= 0.4.1'
   gem 'factory_girl'
   gem 'mocha', :require => false
+  gem 'shoulda'
 end
 
 gem 'jquery-rails'
@@ -51,4 +54,5 @@ gem 'squeel'
 # gem 'capistrano'
 
 # To use debugger
-# gem 'ruby-debug19', :require => 'ruby-debug'
+gem 'debugger'
+#gem 'ruby-debug19', :require => 'ruby-debug'

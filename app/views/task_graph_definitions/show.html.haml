@@ -1,0 +1,10 @@
+.title Task Graph Definition
+%pre
+  = @task_graph_definition.definition
+.sub-title Task Definitions
+%ul
+  - @task_graph_definition.task_definitions.each do |task_definition|
+    %li= render :partial => "task_definitions/summary", :locals => {:task_definition => task_definition}
+
+= link_to("edit", edit_task_graph_definition_path(@task_graph_definition))
+  

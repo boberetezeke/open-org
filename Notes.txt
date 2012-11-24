@@ -1,4 +1,22 @@
 
+Plugins
+--------------
+
+Making a new plugin
+
+* from directory above open-org
+* rails plugin new engine_name --mountable
+* cp template/engine.gemspec to root of newly generated engine and replace
+  engine_name with the relevant content
+
+Adding it to the main project
+
+* create github project for plugin
+* add it into the gem file like
+** gem 'open-org-engine_name', git: 'git:..../open-org-engine_name.git'
+* run rake engine:symlink[open-org-engine_name]
+* run rake engine_name:install:migrations (where '-'s in engine name are replaced with '_'s)
+
 Users
 --------------
 

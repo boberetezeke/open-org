@@ -1,8 +1,8 @@
 GIT
-  remote: git@github.com:boberetezeke/open-org-meetings.git
-  revision: d573cf18d3a05d17accaee94fd060977dd5310e8
+  remote: git@github.com:boberetezeke/open_org_pta.git
+  revision: 3ac033aa7c322ca71a36a45f78336cdcbb4a1a56
   specs:
-    open-org-meetings (0.0.1)
+    open_org_pta (0.0.1)
       rails (~> 3.2.9)
 
 GEM
@@ -171,7 +171,7 @@ DEPENDENCIES
   jquery-rails
   minitest-reporters (>= 0.4.1)
   mocha
-  open-org-meetings!
+  open_org_pta!
   rabl-rails
   rails (= 3.2.9)
   ruleby

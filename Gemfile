@@ -15,7 +15,8 @@ gem 'inherited_resources'
 gem 'rabl-rails'
 gem 'bcrypt-ruby'
 
-gem 'open-org-meetings', git: 'git@github.com:boberetezeke/open-org-meetings.git'
+#gem 'open-org-meetings', git: 'git@github.com:boberetezeke/open-org-meetings.git'
+gem 'open_org_pta', git: 'git@github.com:boberetezeke/open_org_pta.git'
 
 
 # Gems used only for assets and not required

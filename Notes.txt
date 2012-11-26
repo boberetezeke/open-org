@@ -17,6 +17,21 @@ Adding it to the main project
 * run rake engine:symlink[open-org-engine_name]
 * run rake engine_name:install:migrations (where '-'s in engine name are replaced with '_'s)
 
+Plugin naming
+
+* Make sure to not use '-''s in the name as this causes the main project's
+  tests to fail
+
+Copying migrations
+
+* rake engine_name:install:migrations
+
+Testing plugins
+
+* Don't know why, but need to use generated dummy project and not open-org
+  cloned into test directory as dummy
+
+
 Users
 --------------
 

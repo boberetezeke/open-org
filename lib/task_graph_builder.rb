@@ -36,6 +36,7 @@ class TaskGroupBuilder < Builder
 
   def task(task_name_or_hash, &block)
 
+    task_class = Task
     if task_name_or_hash.is_a?(Hash)
       # assume there is only one key, and it is a symbol
       # assume for that key there is either one symbol or a single level array of symbols
@@ -55,7 +56,7 @@ class TaskGroupBuilder < Builder
 
     task_defs = @task_graph_definition.task_definitions.select{|task_def| task_def.name.to_s == name.to_s}
     if task_defs.empty? then
-      task_definition = Task.new(:name => name, :organization => @organization, :is_prototype => true)
+      task_definition = task_class.new(:name => name, :organization => @organization, :is_prototype => true)
     else
       raise TaskGraphBuilder::TaskDefinitionAlreadyDefinedError.new(name) if task_definition
     end
@@ -85,6 +86,23 @@ class TaskGroupBuilder < Builder
 
     @task_graph_definition.task_definitions << task_definition
   end
+
+  def method_missing(sym, *args, &block)
+    if task_class = Task.registered_classes[sym] then
+      if args.size == 1 then
+        name_or_hash = args.first
+        if name_or_hash.is_a?(Hash) then
+          return task(name_or_hash.merge(:task_class => task_class))
+        else
+          return task(:name => name_or_hash, :task_class => task_class)
+        end
+      end
+      args_array = *args
+      raise TaskGraphBuilder::InvalidTaskSyntax.new("only a task name or hash is allowed from args = #{args_array.inspect}")
+    else
+      raise TaskGraphBuilder::UnknownTaskTypeError.new(sym)
+    end
+  end
 end
 
 class TaskGraphBuilder < Builder
@@ -101,12 +119,29 @@ class TaskGraphBuilder < Builder
     end
   end
 
-  class TaskDefinitionAlreadyDefinedError < Error
+  class TaskDefinitionSymbolError < Error
     attr_reader :task_definition_name_symbol
     def initialize(task_definition_name_symbol)
       @task_definition_name_symbol = task_definition_name_symbol
     end
+
+    def to_s
+      "task definition #{@task_definition_name_symbol} already defined"
+    end
   end
+
+  class UnknownTaskTypeError < Error
+    attr_reader :task_type_symbol
+    def initialize(task_type_symbol)
+      @task_type_symbol = task_type_symbol
+    end
+
+    def to_s
+      "unknown task type #{@task_type_symbol}"
+    end
+  end
+
+  class InvalidTaskSyntax < Error; end
 
   attr_reader :tasks
   def initialize(task_graph_definition, organization)

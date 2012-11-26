@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121124191824) do
+ActiveRecord::Schema.define(:version => 20121126162035) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 20121124191824) do
 
   create_table "groups", :force => true do |t|
     t.string "name"
+    t.string "type"
   end
 
   create_table "memberships", :id => false, :force => true do |t|

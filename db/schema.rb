@@ -21,13 +21,13 @@ ActiveRecord::Schema.define(:version => 20121126162035) do
 
   create_table "elections", :force => true do |t|
     t.string "name"
-    t.string "type"
   end
 
   create_table "groups", :force => true do |t|
     t.string  "name"
     t.integer "pta_election_id"
     t.integer "pta_officer_role_id"
+    t.string  "type"
   end
 
   create_table "memberships", :id => false, :force => true do |t|

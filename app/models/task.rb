@@ -25,6 +25,19 @@ class Task < ActiveRecord::Base
 
   #validates_format_of :name, :with => /task/
 
+
+  #cattr_accessor :registered_classes
+  
+  def Task.inherited(klass)
+    super
+    @registered_classes ||= {}
+    @registered_classes[klass.to_s.tableize.singularize] = klass
+  end
+
+  def Task.registered_classes
+    @registered_classes
+  end
+
   # only used when is_prototype is false
   def initialize(*args)
     super(*args)

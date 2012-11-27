@@ -1,11 +1,111 @@
 require 'test_helper'
 
+class MyTask < Task
+  def set_options(options={})
+    self.name += options[:option1]
+  end
+end
+
+class MyOtherTask < Task
+end
+
 class TaskGraphDefinitionTest < ActiveSupport::TestCase
   setup do
     @organization = FactoryGirl.create(:pta)
   end
 
   should "define task_group with one empty task" do
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        task :select_presidential_nominees do
+        end
+      end
+EOF
+    tgd.save
+    
+    assert_equal 1, TaskGraphDefinition.count
+    assert_equal 1, Task.count
+    tgd = TaskGraphDefinition.first
+    assert_equal ["select_presidential_nominees"], Task.all.map(&:name)
+  end
+
+  should "define task_group with one empty custom task" do
+    assert_equal 0, TaskGraphDefinition.count
+
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        my_task :do_something do
+        end
+      end
+EOF
+    tgd.save
+    
+    assert_equal 1, TaskGraphDefinition.count
+    assert_equal 1, MyTask.count
+    tgd = TaskGraphDefinition.first
+    assert_equal ["do_something"], MyTask.all.map(&:name)
+  end
+
+  should "define task_group with one empty custom task with an option" do
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        my_task :do_something, :option1 => "-extra" do 
+        end
+      end
+EOF
+    tgd.save
+    
+    assert_equal 1, TaskGraphDefinition.count
+    assert_equal 1, MyTask.count
+    tgd = TaskGraphDefinition.first
+    assert_equal ["do_something-extra"], MyTask.all.map(&:name)
+  end
+
+  should "define task_group with one empty custom task with an option" do
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        my_other_task :do_something, :option1 => "-extra" do
+        end
+      end
+EOF
+
+    tgd.save
+    assert_equal 1, tgd.errors.size
+    assert_equal :definition, tgd.errors.first.first
+    assert_match /custom task class/, tgd.errors.first[1]
+  end
+
+  should "define task_group with one empty undefined custom task with an option" do
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        my_other_other_task :do_something, :option1 => "-extra" do
+        end
+      end
+EOF
+
+    tgd.save
+    assert_equal 1, tgd.errors.size
+    assert_equal :definition, tgd.errors.first.first
+    assert_match /unknown task type/, tgd.errors.first[1]
+  end
+
+  should "define task_group with a duplicate task name" do
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        task :do_something do
+        end
+        task :do_something do
+        end
+      end
+EOF
+
+    tgd.save
+    assert_equal 1, tgd.errors.size
+    assert_equal :definition, tgd.errors.first.first
+    assert_match /already defined/, tgd.errors.first[1]
+  end
+
+  should "define task_group with one empty task and then redefine it" do
     assert_equal 0, TaskGraphDefinition.count
 
     tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)

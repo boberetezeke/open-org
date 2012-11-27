@@ -31,6 +31,11 @@ Testing plugins
 * Don't know why, but need to use generated dummy project and not open-org
   cloned into test directory as dummy
 
+Routes within engines
+
+* open_org_pta.name_election_task_path works
+* NameElectionTask is global, but should be inside OpenOrgPta module?
+* NameElectionTaskController is global, but should ... ?
 
 Users
 --------------

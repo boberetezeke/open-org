@@ -3,3 +3,8 @@
 
 en:
   hello: "Hello world"
+  task_graph_builder:
+    custom_task_doesnt_support_options_error: "custom task class %{task_class} doesn't support options"
+    unknown_task_type_error:  "unknown task type %{task_type}, not in registered classes = %{registered_classes}"
+    task_definition_duplicate_symbol_error: "task definition %{task_definition_name} already defined"
+    missing_dependency_error: "missing dependency: %{task_dependency_name}"

@@ -1,2 +1,7 @@
+- if f.object.errors.any?
+  Errors:
+  %ul
+  - f.object.errors.full_messages.each do |message|
+    %li= message
 = f.input :definition
 = f.submit

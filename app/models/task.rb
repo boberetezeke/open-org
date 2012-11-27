@@ -35,6 +35,7 @@ class Task < ActiveRecord::Base
   end
 
   def Task.registered_classes
+    @registered_classes ||= {}
     @registered_classes
   end
 

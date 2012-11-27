@@ -61,7 +61,7 @@ EOF
     assert_equal ["do_something-extra"], MyTask.all.map(&:name)
   end
 
-  should "define task_group with one empty custom task with an option" do
+  should "define task_group with one empty custom task that doesn't take options, with an option" do
     tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
       task_group :governance do
         my_other_task :do_something, :option1 => "-extra" do
@@ -204,7 +204,7 @@ EOF
     #TaskGraph.instance.eval_task_definition(@organization, :create, <<EOF)
     tgd = TaskGraphDefinition.create(:organization => @organization, :definition => <<EOF)
       task_group :governance do
-        task :select_presidential_nominating_committee do
+        my_task :select_presidential_nominating_committee do
           performed_by :board
         end
 

@@ -22,5 +22,7 @@ Ooo::Application.routes.draw do
     end
   end
 
+  mount OpenOrgPta::Engine => "/"
+
   root :to => 'users#dashboard'
 end

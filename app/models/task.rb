@@ -27,16 +27,14 @@ class Task < ActiveRecord::Base
 
 
   #cattr_accessor :registered_classes
-  
+  @@registered_classes = {}
   def Task.inherited(klass)
     super
-    @registered_classes ||= {}
-    @registered_classes[klass.to_s.tableize.singularize] = klass
+    @@registered_classes[klass.to_s.tableize.singularize] = klass
   end
 
   def Task.registered_classes
-    @registered_classes ||= {}
-    @registered_classes
+    @@registered_classes
   end
 
   # only used when is_prototype is false

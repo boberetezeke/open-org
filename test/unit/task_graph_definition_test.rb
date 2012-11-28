@@ -14,6 +14,17 @@ class TaskGraphDefinitionTest < ActiveSupport::TestCase
     @organization = FactoryGirl.create(:pta)
   end
 
+  should "catch syntax errors on definition" do
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+EOF
+    tgd.save
+    
+    assert_equal 1, tgd.errors.size
+    assert_equal :definition, tgd.errors.first.first
+    assert_match /syntax error/, tgd.errors.first[1]
+  end
+
   should "define task_group with one empty task" do
     tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
       task_group :governance do
@@ -44,6 +55,25 @@ EOF
     assert_equal 1, MyTask.count
     tgd = TaskGraphDefinition.first
     assert_equal ["do_something"], MyTask.all.map(&:name)
+  end
+
+  should "define task_group with two empty custom task with no name for the first and and second dependent on it" do
+    assert_equal 0, TaskGraphDefinition.count
+
+    tgd = TaskGraphDefinition.new(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        my_task do
+        end
+
+        my_task :next_task => :my_task do
+        end
+      end
+EOF
+    tgd.save
+    
+    assert_equal 1, TaskGraphDefinition.count
+    assert_equal 2, MyTask.count
+    assert_equal ["my_task", "next_task"], MyTask.all.map(&:name)
   end
 
   should "define task_group with one empty custom task with an option" do
@@ -241,4 +271,21 @@ EOF
     assert_equal :definition, tgd.errors.first.first
     assert_equal "missing dependency: select_presidential_nominating_committee", tgd.errors.first[1]
   end
+
+=begin
+  # TODO: NOT sure on this one: should roles have to exist or not?
+  should "define a task that has a role assigned that doesn't exist" do
+    #TaskGraph.instance.eval_task_definition(@organization, :create, <<EOF)
+    tgd = TaskGraphDefinition.create(:organization => @organization, :definition => <<EOF)
+      task_group :governance do
+        task :select_presidential_nominees do
+          performed_by :somebody
+        end
+      end
+EOF
+    assert_equal 1, tgd.errors.size
+    assert_equal :definition, tgd.errors.first.first
+    assert_equal "role doesn't exist: somebody", tgd.errors.first[1]
+  end
+=end
 end

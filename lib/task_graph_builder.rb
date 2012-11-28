@@ -98,7 +98,9 @@ class TaskGroupBuilder < Builder
     # attempt to load class
     sym.to_s.camelize.constantize rescue nil
     if task_class = Task.registered_classes[sym.to_s] then
-      if args.size == 1 then
+      if args.size == 0 then
+        return task(:task_name => sym.to_s, :task_class => task_class, &block)
+      elsif args.size == 1 then
         name_or_hash = args.first
         if name_or_hash.is_a?(Hash) then
           return task(name_or_hash.merge(:task_class => task_class), &block)

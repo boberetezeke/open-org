@@ -61,6 +61,9 @@ class TaskGraphDefinition < ActiveRecord::Base
     rescue TaskGraphBuilder::Error => e
       errors.add(:definition, e.message)
       return false
+    rescue Exception => e
+      errors.add(:definition, e.message)
+      return false
     end
   end
 

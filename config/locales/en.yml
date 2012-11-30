@@ -3,6 +3,8 @@
 
 en:
   hello: "Hello world"
+  app:
+    access_denied: "access denied to this page"
   task_graph_builder:
     custom_task_doesnt_support_options_error: "custom task class %{task_class} doesn't support options"
     unknown_task_type_error:  "unknown task type %{task_type}, not in registered classes = %{registered_classes}"

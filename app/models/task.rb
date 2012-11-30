@@ -57,6 +57,14 @@ class Task < ActiveRecord::Base
     self.owner = self.role.users.empty? ? self.role.groups.first : self.users.first
   end
 
+  def create_for_owner_from_definition(owner, task_definition)
+    task = self.dup
+    task.is_prototype = false
+    task.prototype = task_definition
+    task.owner = owner
+    task
+  end
+
   # only used when is_prototype is true
   def performed_by(role_name)
     role = Role.where(:name => role_name.to_s).first

@@ -12,6 +12,10 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  def set_current_user(user)
+    session[:user_id] = user.id
+  end
 end
 
 require "mocha/setup"

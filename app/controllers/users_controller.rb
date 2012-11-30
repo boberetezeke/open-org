@@ -1,5 +1,3 @@
-class UsersController < ApplicationController
-  def edit
-    @user = User.find(params[:id])
-  end
+class UsersController < InheritedResources::Base
+  actions :show
 end

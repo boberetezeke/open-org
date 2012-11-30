@@ -22,5 +22,14 @@ class User < ActiveRecord::Base
   def assigned_tasks
     self.tasks
   end
+
+  def can_access_task_definition?(task_definition)
+    roles.each do |role|
+      if role.task_definitions.map{|task_def| task_def.id}.include?(task_definition.id)
+        return true
+      end
+    end
+    return false
+  end
 end
 

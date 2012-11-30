@@ -14,7 +14,20 @@ class TasksController < ApplicationController
   end
 
   def new
-    @task = Task.new
+    if params[:task_id] && params[:user_id]
+      task_id = params[:task_id].to_i
+      user_id = params[:user_id].to_i
+      user = User.find(user_id)
+      task_definition = Task.find(task_id)
+      if user.can_access_task_definition?(task_definition)
+        @task = task_definition.create_for_owner_from_definition(user, task_definition)
+      else
+        flash[:error] = I18n.translate('app.access_denied')
+        redirect_to :root
+      end
+    else
+      @task = Task.new(:owner => current_user)
+    end
   end
 
   def edit

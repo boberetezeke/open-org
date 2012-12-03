@@ -13,5 +13,12 @@ Dashboard
   .tasks
     - current_user.assigned_tasks.in_priority_order.each do |task|
       = render :partial => "tasks/summary", :locals => {:task => task, :include_actions => false}
+  .start-tasks-headline Tasks To Start
+  .start-tasks
+    - task_definitions = current_user.all_roles_including(:task_definitions).inject([]) {|sum, role| sum + role.task_definitions.select{|task_def| task_def.dependencies.empty? && task_def.current_revision}}
+    = form_tag '/tasks/new', :method => 'get' do
+      = hidden_field_tag('user_id', current_user.id)
+      .role-action= select_tag('task_id', options_from_collection_for_select(task_definitions, 'id', 'name_with_role'))
+      = submit_tag('start task', :name => nil)
 - else
   %div no current user

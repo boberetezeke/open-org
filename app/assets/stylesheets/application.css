@@ -12,6 +12,16 @@
  *= require_tree .
 */
 
+.user-status {
+  float: right
+}
+
+.header {
+  background-color: #EEE;
+  padding: 5px 10px 10px 5px;
+  margin-bottom: 10px;
+}
+
 /*
 #signin {
   background-image: url("/assets/email_sign_in_black.png");

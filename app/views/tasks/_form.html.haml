@@ -3,4 +3,6 @@
   = f.hidden_field :owner_id, value: @task.owner.id
   = f.hidden_field :owner_type, value: @task.owner.class.to_s
   = f.input :name
-  = f.button :submit
+  = label_tag "done", "Done"
+  = check_box_tag "done"
+  %div= f.button :submit

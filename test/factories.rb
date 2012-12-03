@@ -31,6 +31,9 @@ FactoryGirl.define do
 
     factory :jane, class: User do
       name "Jane"
+      after(:create) do |user|
+        user.roles << FactoryGirl.create(:members)
+      end
     end
 
     factory :sally, class: User do
@@ -45,21 +48,21 @@ FactoryGirl.define do
   factory :board, class: Group do
     name "Board"
     after(:create) do |group|
-      group.users << [:fred, :jane, :sally].map{|name| FactoryGirl.build(name)}
+      group.users << [:fred, :jane, :sally].map{|name| FactoryGirl.create(name)}
     end
   end
 
   factory :nominating_committee, class: Group do
     name "Nominating Committee"
     after(:create) do |group|
-      group.users << [:jane, :bobby].map{|name| FactoryGirl.build(name)}
+      group.users << [:jane, :bobby].map{|name| FactoryGirl.create(name)}
     end
   end
 
   factory :board_role, class: Role do
     name "Board Role"
     after(:create) do |role|
-      role.groups << FactoryGirl.build(:board)
+      role.groups << FactoryGirl.create(:board)
     end
   end
 

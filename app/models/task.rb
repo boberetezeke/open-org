@@ -61,11 +61,17 @@ class Task < ActiveRecord::Base
     task = self.dup
     task.is_prototype = false
     task.prototype = task_definition
+    task.organization = task_definition.organization
     task.owner = owner
     task
   end
 
   # only used when is_prototype is true
+
+  def name_with_role
+    "#{self.name} (#{self.organization.name} - #{self.role.name})"
+  end
+
   def performed_by(role_name)
     role = Role.where(:name => role_name.to_s).first
     if !role then

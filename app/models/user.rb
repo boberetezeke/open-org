@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   has_many :assignments, :as => :assignable
   has_many :roles, :through => :assignments
   has_many :groups, :through => :memberships
+  has_many :group_assignments, :through => :groups, :class_name => "Assignment", :source => :assignments
+  has_many :group_roles, :through => :group_assignments, :class_name => "Role", :source => :role
   has_many :organizations, :through => :memberships
   has_many :organizational_groups, :through => :organizations, :source => :groups
   has_many :votes
@@ -17,6 +19,14 @@ class User < ActiveRecord::Base
     user_ids_in_groups = Membership.where(mt[:group_id].eq(nil).not).map{|m| m.user_id}.reject{|u| u.nil?}
     ut = User.arel_table
     User.where(ut[:id].in(user_ids_in_groups).not)
+  end
+
+  def all_roles
+    roles + group_roles
+  end
+
+  def all_roles_including(include_spec)
+    roles.includes(include_spec) + group_roles.includes(include_spec)
   end
 
   def assigned_tasks

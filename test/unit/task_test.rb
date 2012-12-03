@@ -1,7 +1,7 @@
 require "test_helper"
 
 class TaskTest < ActiveSupport::TestCase
-  test "define a task from a task definition" do
+  should "define a task from a task definition" do
     board_role = FactoryGirl.create(:board_role)
     board = board_role.groups.first
 

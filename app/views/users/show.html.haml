@@ -1,14 +1,18 @@
 User:
 = @user.name
-.roles-title Roles
-- @user.roles.each do |role|
-  .role-title= link_to(role.name, role)
+.tasks-title Tasks
+- @user.tasks.each do |task|
+  = link_to(task.name, task)
+- @user.all_roles.includes(:task_definitions).each do |role|
   = form_tag '/tasks/new', :method => 'get' do
     = hidden_field_tag('user_id', @user.id)
     .role-action= select_tag('task_id', options_from_collection_for_select(role.task_definitions, 'id', 'name'))
     = submit_tag('start task', :name => nil)
-.tasks-title Tasks
-- @user.tasks.each do |task|
-  = link_to(task.name, task)
+.roles-title Direct Roles
+- @user.roles.each do |role|
+  .role-title= link_to(role.name, role)
+.roles-title Group Roles 
+- @user.group_roles.each do |role|
+  .role-title= link_to(role.name, role)
 
 

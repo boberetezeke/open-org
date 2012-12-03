@@ -6,10 +6,20 @@
     = csrf_meta_tags 
 
   %body
-    - if current_user
-      = link_to 'Sign Out', user_session_path(current_user), :method => :delete
-    - else
-      %a#signin{:href=>"#"}= "Sign In"
+    .header
+      - if current_user
+        %span.links
+          = link_to("Home", dashboard_user_path(current_user))
+          |
+          = link_to("My Tasks", tasks_path)
+          |
+          = link_to("My Organizations", organizations_path)
+        %span.user-status
+          = link_to 'Sign Out', user_session_path(current_user), :method => :delete
+      - else
+        %span.title Welcome To Open Org
+        %span.user-status
+          %a#signin{:href=>"#"}= "Sign In"
     = yield
 
 :javascript

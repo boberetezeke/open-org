@@ -57,12 +57,11 @@ class Task < ActiveRecord::Base
     self.owner = self.role.users.empty? ? self.role.groups.first : self.users.first
   end
 
-  def create_for_owner_from_definition(owner, task_definition)
+  def create_task
     task = self.dup
     task.is_prototype = false
-    task.prototype = task_definition
-    task.organization = task_definition.organization
-    task.owner = owner
+    task.prototype = self
+    task.organization = self.organization
     task
   end
 

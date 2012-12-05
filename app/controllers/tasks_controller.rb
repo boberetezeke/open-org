@@ -20,7 +20,8 @@ class TasksController < ApplicationController
       user = User.find(user_id)
       task_definition = Task.find(task_id)
       if user.can_access_task_definition?(task_definition)
-        @task = task_definition.create_for_owner_from_definition(user, task_definition)
+        @task = task_definition.create_task
+        @task.owner = user
       else
         flash[:error] = I18n.translate('app.access_denied')
         redirect_to :root
@@ -37,6 +38,10 @@ class TasksController < ApplicationController
   def update
     @task = Task.find(params[:id])
     if @task.update_attributes(params[:task])
+      if params[:done] then
+        work_flower = WorkFlower.new
+        work_flower.set_task_state(@task, current_user, :done)
+      end
       respond_with do |format|
         format.html { redirect_to task_path(@task.id) }
         format.json { head :ok }
@@ -52,6 +57,8 @@ class TasksController < ApplicationController
   def create
     @task = Task.new(params[:task])
     if @task.save
+        work_flower = WorkFlower.new
+        work_flower.set_task_state(@task, current_user, :in_progress)
       respond_with do |format|
         format.html { redirect_to task_path(@task.id) }
         format.json { head :ok }

@@ -19,6 +19,29 @@ FactoryGirl.define do
     name "select_presidential_nominees"
     is_prototype true
     association :role, factory: :nominating_committee_role
+
+    after(:create) do |task|
+      task.dependencies << FactoryGirl.create(:select_nominating_committee_task_definition)
+    end
+  end
+
+  factory :notify_membership_of_election_task_definition, class: Task do
+    name "notify_membership_of_election"
+    is_prototype true
+    association :role, factory: :nominating_committee_role
+    after(:create) do |task|
+      task.dependencies << FactoryGirl.create(:select_nominating_committee_task_definition)
+    end
+  end
+
+  factory :vote_for_officers, class: Task do
+    name "select_presidential_nominees"
+    is_prototype true
+    association :role, factory: :member_role
+    
+    after(:create) do |task|
+      task.dependencies << [FactoryGirl.create(:select_presidential_nominees_task_definition), FactoryGirl.create(:notify_membership_of_election_task_definition)]
+    end
   end
 
   factory :user do

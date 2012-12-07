@@ -1,4 +1,6 @@
 class Task < ActiveRecord::Base
+  attr_accessible :name
+
   cattr_accessor :depends_on_name
 
   has_many :dependers, class_name: 'TaskDependency', foreign_key: :dependee_id

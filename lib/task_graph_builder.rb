@@ -62,23 +62,15 @@ class TaskGroupBuilder < Builder
 
     task_defs = @task_graph_definition.task_definitions.select{|task_def| task_def.name.to_s == task_name.to_s}
     if task_defs.empty? then
-      task_definition = task_class.new(:name => task_name, :organization => @organization, :is_prototype => true)
+      task_definition = task_class.new(:name => task_name)
+      task_definition.organization = @organization
+      task_definition.is_prototype = true
     else
       raise TaskGraphBuilder::TaskDefinitionDuplicateSymbolError.new(task_name)
     end
     task_definition_builder = TaskDefinitionBuilder.new(task_definition)
-    task_definition_builder.instance_exec(task_definition, &block)
+    task_definition_builder.instance_exec(task_definition, &block) if block
       
-=begin
-    task_definitions = TaskDefinition.where(:name => name.to_s, :organization_id => @organization.id)
-    task_definition = task_definitions.first if task_definitions.present?
-    if @task_graph_definition.new_record?
-      raise TaskGraphBuilder::TaskDefinitionAlreadyDefinedError.new(name) if task_definition
-    end
-    task_definition_builder = TaskDefinitionBuilder.new(task_definition)
-    task_definition_builder.instance_exec(task_definition, &block)
-=end
-
     task_definition.dependencies = dependent_task_symbols.map do |dependent_task_symbol|
       #dependent_task_definition = TaskDefinition.find_by_name(dependent_task_symbol.to_s)
       #if !dependent_task_definition
@@ -136,7 +128,7 @@ class TaskGraphBuilder < Builder
     end
 
     def to_s
-      I18n.t("task_graph_builder.missing_dependency_error", :task_dependency_name => @task_dependency_name_symbol.to_s) 
+      I18n.t("task_graph_builder.missing_dependency_error", :task_dependency_name => @task_dependency_name_symbol.to_s)
     end
   end
 
@@ -183,8 +175,14 @@ class TaskGraphBuilder < Builder
 
   def task_group(group_name, &block)
     task_group_builder = TaskGroupBuilder.new(@task_graph_definition, @organization)
-    task_group_builder.instance_exec(&block)
-    @tasks += task_group_builder.tasks.values
+    task_group_builder.instance_exec(&block) if block
+
+    parent_task = Task.new(:name => group_name)
+    parent_task.is_prototype = true
+    parent_task.organization = @organization
+    parent_task.child_tasks << @task_graph_definition.task_definitions
+
+    @task_graph_definition.task_definitions << parent_task
   end
 end
 

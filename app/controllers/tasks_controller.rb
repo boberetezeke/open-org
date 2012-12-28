@@ -22,12 +22,15 @@ class TasksController < ApplicationController
       if user.can_access_task_definition?(task_definition)
         @task = task_definition.create_task
         @task.owner = user
+        assign_organization
       else
         flash[:error] = I18n.translate('app.access_denied')
         redirect_to :root
       end
     else
-      @task = Task.new(:owner => current_user)
+      @task = Task.new
+      @task.owner = current_user
+      assign_organization
     end
   end
 
@@ -75,5 +78,13 @@ class TasksController < ApplicationController
     @task = Task.find(params[:id])
     @task.destroy
     redirect_to tasks_path
+  end
+
+  private
+
+  def assign_organization
+    organization = Organization.find(params[:organization_id])
+    raise "Organization #{organization.name} not owned by user #{current_user.id}" unless current_user.organizations.include?(organization)
+    @task.organization = organization
   end
 end

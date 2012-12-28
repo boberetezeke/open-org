@@ -1,5 +1,5 @@
 class Task < ActiveRecord::Base
-  attr_accessible :name
+  attr_accessible :name, :prototype 
 
   cattr_accessor :depends_on_name
 
@@ -9,19 +9,23 @@ class Task < ActiveRecord::Base
   has_many :dependencies, through: :dependees, :source => :dependent_task
   has_many :depending_on, through: :dependers, :source => :dependee_task
 
-  # only applies if is_prototype is false
-  belongs_to  :owner,       :polymorphic => true
-  belongs_to  :prototype,   :class_name => "Task", :foreign_key => :task_definition_id, :conditions => {:is_prototype => true}
   belongs_to  :parent_task, :class_name => "Task", :foreign_key => :parent_task_id
   has_many    :child_tasks, :class_name => "Task", :foreign_key => :parent_task_id
 
-  # for those tasks that have votes for them to proceed
-  has_many    :votes
+  # only applies if is_prototype is false
+  belongs_to  :owner,       :polymorphic => true
+  belongs_to  :prototype,   :class_name => "Task", :foreign_key => :task_definition_id, :conditions => {:is_prototype => true}
+  has_many    :task_field_values
 
   # only applies if is_prototype is true
   belongs_to  :organization
+
   belongs_to  :role
   belongs_to  :task_graph_definition
+  has_many    :task_fields
+
+  # for those tasks that have votes for them to proceed
+  has_many    :votes
 
   scope :in_priority_order, order(:priority)
 
@@ -50,13 +54,18 @@ class Task < ActiveRecord::Base
     end
   end
 
+  def prototype=(task_definition)
+    super
+    setup_task_definition_defaults(task_definition)
+  end
+
   def setup_task_definition_defaults(task_definition)
     self.role = task_definition.role
     select_owner
   end
 
   def select_owner
-    self.owner = self.role.users.empty? ? self.role.groups.first : self.users.first
+    self.owner = self.role.users.empty? ? self.role.groups.first : self.role.users.first
   end
 
   def create_task

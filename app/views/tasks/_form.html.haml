@@ -2,7 +2,8 @@
   .task= @task.name
   = f.hidden_field :owner_id, value: @task.owner.id
   = f.hidden_field :owner_type, value: @task.owner.class.to_s
-  = f.hidden_field :task_definition_id, value: @task.prototype.id
+  - if @task.prototype
+    = f.hidden_field :task_definition_id, value: @task.prototype.id
   = f.hidden_field :organization_id, value: @task.organization.id
   = f.input :name
   = label_tag "done", "Done"

@@ -6,13 +6,30 @@ FactoryGirl.define do
   factory :schedule_meeting, class: Task do
     name "schedule_meeting"
     is_prototype true
-    association :role, factory: :president_role
   end
 
+  factory :name_election_task_definition, class: Task do
+    name "name_election_task_definition"
+    is_prototype true
+  end
+
+  factory :name_election_task, class: Task do
+    name "name_election_task"
+    is_prototype false
+  end
+
+  factory :election_name_task_field, class: TaskField do
+    name "election_name"
+    data_type "string"
+    control_type "text_field"
+  end
+
+  factory :election_name_task_field_value, class: TaskFieldValue do
+  end
+  
   factory :select_nominating_committee_task_definition, class: Task do
     name "select_nominating_committee"
     is_prototype true
-    association :role, factory: :board_role
   end
 
   factory :select_presidential_nominees_task_definition, class: Task do

@@ -3,10 +3,7 @@ require 'test_helper'
 class TasksControllerTest < ActionController::TestCase
   
   setup do
-    FactoryGraph.new.create_objects(
-      self,
-      :bobby,
-      :jane,
+    FactoryGraph.new(self).create_objects(
       :pta => {:users => [:bobby, :jane]},
       :president_role => {:users => [:jane]},
       :schedule_meeting => {:role => :president_role}

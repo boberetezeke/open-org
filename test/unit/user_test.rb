@@ -3,9 +3,7 @@ require "test_helper"
 
 class UserTest < ActiveSupport::TestCase
   setup do
-    FactoryGraph.new.create_objects(
-      self,
-      :board,
+    FactoryGraph.new(self).create_objects(
       :board_role => {:groups => :board},
       :jane => {:groups => :board, :roles => :member_role},
       :select_presidential_nominees_task_definition => { :role => :board_role }

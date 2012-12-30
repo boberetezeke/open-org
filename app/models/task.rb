@@ -1,5 +1,7 @@
+require "set"
+
 class Task < ActiveRecord::Base
-  attr_accessible :name, :prototype 
+  attr_accessible :name, :prototype
 
   cattr_accessor :depends_on_name
 
@@ -11,6 +13,9 @@ class Task < ActiveRecord::Base
 
   belongs_to  :parent_task, :class_name => "Task", :foreign_key => :parent_task_id
   has_many    :child_tasks, :class_name => "Task", :foreign_key => :parent_task_id
+
+  #after_initialize :load_task_field_values
+  after_save       :save_task_field_values
 
   # only applies if is_prototype is false
   belongs_to  :owner,       :polymorphic => true
@@ -105,4 +110,94 @@ class Task < ActiveRecord::Base
   def on_completion(&block)
     @on_completion_proc = block
   end
+
+  def add_task_field(task_field)
+    @task_fields_hash[task_field.name] = task_field
+  end
+
+  def method_missing(sym, *args, &block)
+    if !(self.is_prototype) then
+      load_task_field_values
+      method_name = sym.to_s
+      if method_name =~ /^(.*)=/ then
+        method_name = $1
+        if task_field = @task_fields[method_name] then
+          if task_field_value = @task_field_values[method_name] then
+            task_field_value.value = args.first
+          else
+            @task_field_values[method_name] = 
+              TaskFieldValue.new(:task => self, :task_field => task_field, :value => args.first)
+          end
+          @task_field_values_changed.add(method_name)
+        else
+          raise "task field not defined for #{method_name}"
+        end
+
+        #method_name_task_fields = self.prototype.task_fields.where(:name => method_name)
+        #if method_name_task_fields.empty?
+        #  raise "task field not defined for #{method_name}"
+        #else
+        #  task_field_values = task_field_values_for_method_name(method_name)
+        #  if task_field_values.empty?
+        #    self.task_field_values << TaskFieldValue.new(:value => args.first, :task_field => method_name_task_fields.first)
+        #  else
+        #    TaskFieldValue.find(task_field_values.first.id).update_attributes(:value => args.first)
+        #  end
+        #end
+      else
+        if @task_fields[method_name] then
+          task_field_value = @task_field_values[method_name]
+          task_field_value.nil? ? nil : task_field_value.value
+        else
+          raise "task field not defined for #{method_name}"
+        end
+
+        #task_field_values = task_field_values_for_method_name(method_name)
+        #if task_field_values.present? then
+        #  return task_field_values.first.value
+        #else
+        #  task_fields = self.task_fields.where(:name => method_name)
+        #  return nil if task_fields.present?
+        #end
+      end
+    end
+
+    #super
+  end
+
+  private
+
+  def load_task_field_values
+    return if @task_fields
+
+    @task_fields = {}
+    @task_field_values = {} 
+    @task_field_values_changed = Set.new
+    self.prototype.task_fields.each do |tf|
+      @task_fields[tf.name] = tf
+    end
+    self.task_field_values.includes(:task_field).each do |task_field_value|
+      @task_field_values[task_field_value.task_field.name] = task_field_value
+    end
+  end
+
+  def save_task_field_values
+    return unless @task_field_values_changed
+    @task_field_values_changed.each do |task_field_name|
+      @task_field_values[task_field_name].save
+    end
+    @task_field_values_changes = Set.new
+  end
+
+=begin
+  def task_field_values_for_method_name(method_name)
+    # if this is a new record, then the objects won't be saved to the database yet
+    if self.new_record? then
+      task_field_values = self.task_field_values.select{|tfv| tfv.task_field.name == method_name}
+    else
+      task_field_values = self.task_field_values.joins{task_field}.where{task_field.name == method_name}
+    end
+  end
+=end
+
 end

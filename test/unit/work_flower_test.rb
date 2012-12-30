@@ -13,9 +13,7 @@ class WorkFlowerTest < ActiveSupport::TestCase
   setup do
     @work_flower = WorkFlower.new
     @objects = 
-    FactoryGraph.new.create_objects(
-        self,
-        :user1,
+    FactoryGraph.new(self).create_objects(
         :user_role      => {:users => :user1},
         :root_task_def  => {:role => :user_role},
         :mid_task_def_1 => {:role => :user_role, :dependencies => [:root_task_def]},

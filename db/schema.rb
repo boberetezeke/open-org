@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121205005529) do
+ActiveRecord::Schema.define(:version => 20121229213352) do
 
   create_table "assignments", :force => true do |t|
     t.integer "assignable_id"
@@ -43,6 +43,22 @@ ActiveRecord::Schema.define(:version => 20121205005529) do
   create_table "task_dependencies", :force => true do |t|
     t.integer "dependee_id"
     t.integer "depender_id"
+  end
+
+  create_table "task_field_values", :force => true do |t|
+    t.string  "value"
+    t.integer "task_id"
+    t.integer "task_field_id"
+  end
+
+  create_table "task_fields", :force => true do |t|
+    t.string  "name"
+    t.string  "data_type"
+    t.string  "control_type"
+    t.string  "choice_class_name"
+    t.string  "choice_scope_name"
+    t.integer "task_id"
+    t.string  "display_name"
   end
 
   create_table "task_graph_definitions", :force => true do |t|

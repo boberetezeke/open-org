@@ -1,11 +1,14 @@
+require "set"
+
 class FactoryGraph
-  def initialize
+  def initialize(test)
     @objects = {}
+    @test = test
+    @instance_variables_set = Set.new
   end
 
   def create_objects(*args)
     factory_specs = []
-    test = args.shift
     args.each do |arg|
       if arg.is_a?(Hash) then
         arg.each {|k,v| factory_specs.push({k => v}) }
@@ -18,7 +21,8 @@ class FactoryGraph
 
     # set instance variables in test
     @objects.each do |k, v|
-      test.instance_variable_set("@#{k}", v)
+      @test.instance_variable_set("@#{k}", v) unless @instance_variables_set.include?(k)
+      @instance_variables_set.add(k)
     end
 
     @objects
@@ -34,8 +38,10 @@ class FactoryGraph
   def build_object(factory_spec)
     if factory_spec.is_a?(Hash) then
       factory_name = factory_spec.keys.first
-    else
+    elsif factory_spec.is_a?(Symbol) then
       factory_name = factory_spec
+    else
+      return factory_spec
     end
 
     return @objects[factory_name] if @objects[factory_name]
@@ -50,7 +56,7 @@ class FactoryGraph
           # the values are factory names
           if reflection.macro == :has_many then
             if value.is_a?(Array)
-              objects = value.map{|factory_name| build_object(factory_name)}
+              objects = value.map{|sub_factory_spec| build_object(sub_factory_spec)}
             else
               objects = [build_object(value)]
             end
@@ -59,7 +65,7 @@ class FactoryGraph
             object.send("#{field}=", build_object(value))
           end
         else
-          object.send("#{k}=", v)
+          object.send("#{field}=", value)
         end
       end
     end

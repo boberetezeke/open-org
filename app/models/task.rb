@@ -14,6 +14,8 @@ class Task < ActiveRecord::Base
   belongs_to  :parent_task, :class_name => "Task", :foreign_key => :parent_task_id
   has_many    :child_tasks, :class_name => "Task", :foreign_key => :parent_task_id
 
+  after_create     :create_task_fields
+
   #after_initialize :load_task_field_values
   after_save       :save_task_field_values
 
@@ -165,7 +167,42 @@ class Task < ActiveRecord::Base
     #super
   end
 
+  class << self
+    attr_accessor :defined_task_fields
+
+    def task_field(*args)
+      options = args.last.is_a?(Hash) ? args.pop : {}
+
+      @defined_task_fields = args.flatten.map do |task_field_name| 
+        default_options = {
+           :name => task_field_name, 
+           :data_type => "string",
+           :control_type => "text_field"
+        }
+        TaskField.new(default_options.merge(options))
+      end
+    end
+
+    def defined_task_fields
+      @defined_task_fields ||= []
+    end
+  end
+
   private
+
+  # if is_prototype is true
+  
+  def create_task_fields
+    return unless is_prototype
+
+    self.class.defined_task_fields.each do |task_field|
+      new_task_field = task_field.dup
+      new_task_field.task_id = self.id
+      new_task_field.save
+    end
+  end
+
+  # if is_prototype is false
 
   def load_task_field_values
     return if @task_fields

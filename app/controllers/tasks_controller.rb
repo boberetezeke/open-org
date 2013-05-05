@@ -20,7 +20,7 @@ class TasksController < ApplicationController
       user = User.find(user_id)
       task_definition = Task.find(task_id)
       if user.can_access_task_definition?(task_definition)
-        @task = task_definition.create_task
+        @task = task_definition.new_task
         @task.owner = user
         assign_organization
       else

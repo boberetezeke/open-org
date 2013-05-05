@@ -68,14 +68,14 @@ class Task < ActiveRecord::Base
 
   def setup_task_definition_defaults(task_definition)
     self.role = task_definition.role
-    select_owner
+    select_owner if self.role
   end
 
   def select_owner
     self.owner = self.role.users.empty? ? self.role.groups.first : self.role.users.first
   end
 
-  def create_task
+  def new_task
     task = self.dup
     task.is_prototype = false
     task.prototype = self
@@ -105,6 +105,24 @@ class Task < ActiveRecord::Base
     @completed_when_proc = block
   end
 
+  define_callbacks :activation, :completion
+  
+  def self.before_activation(*args, &block)
+    set_callback(:activation, :before, *args, &block)
+  end
+
+  def self.after_activation(*args, &block)
+    set_callback(:activation, :after, *args, &block)
+  end
+
+  def self.before_completion(*args, &block)
+    set_callback(:completion, :before, *args, &block)
+  end
+
+  def self.after_completion(*args, &block)
+    set_callback(:completion, :after, *args, &block)
+  end
+=begin
   def on_activation(&block)
     @on_activation_proc = block
   end
@@ -112,6 +130,17 @@ class Task < ActiveRecord::Base
   def on_completion(&block)
     @on_completion_proc = block
   end
+=end
+
+=begin
+  def save
+    if !self.is_prototype
+      run_callbacks(:activation) { super }
+    else
+      super
+    end
+  end
+=end
 
   def add_task_field(task_field)
     @task_fields_hash[task_field.name] = task_field

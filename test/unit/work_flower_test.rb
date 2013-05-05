@@ -23,12 +23,12 @@ class WorkFlowerTest < ActiveSupport::TestCase
   end
 
   def test_starting_a_task
-    root_task = @root_task_def.create_task
+    root_task = @root_task_def.new_task
     assert_equal @root_task_def, root_task.prototype
   end
 
   def test_finish_root_task
-    root_task = @root_task_def.create_task
+    root_task = @root_task_def.new_task
     @work_flower.set_task_state(root_task, @user1, :done)
     assert_equal "done", root_task.state
     assert_equal 2, root_task.depending_on.size
@@ -39,7 +39,7 @@ class WorkFlowerTest < ActiveSupport::TestCase
   end
 
   def test_finish_task_with_2_depends_on
-    root_task = @root_task_def.create_task
+    root_task = @root_task_def.new_task
     @work_flower.set_task_state(root_task, @user1, :done)
     mid_task_1 = root_task.depending_on.sort_by(&:name).first
     @work_flower.set_task_state(mid_task_1, @user1, :done)

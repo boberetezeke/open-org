@@ -8,7 +8,37 @@ class MyTask2 < Task
   task_field :field3, :data_type => :integer, :control_type => :slider
 end
 
+class MyTask3 < Task
+  task_field :field4
+  after_activation do |task|
+    task.field4 = "field4 value"
+  end
+
+  after_completion do |task|
+    task.field4 = "field4 final value"
+  end
+end
+
 class TaskTest < ActiveSupport::TestCase
+  context "testing callbacks" do
+=begin
+    should "call on_activate callback on task creation" do
+      mytask3_prototype = MyTask3.new(:name => "my task prototype 3")
+      mytask3_prototype.is_prototype = true
+      mytask3_prototype.save
+
+      my_task3 = mytask3_prototype.new_task
+      my_task3.save
+      assert_equal "field4 value", my_task3.field4
+
+      my_task3.state = :done
+      my_task3.save
+
+      assert_equal "field4 final value", my_task3.field4
+    end
+=end
+  end
+
   context "testing task class methods" do
     should "create task fields" do
       mytask = MyTask.new(:name => "my task")
